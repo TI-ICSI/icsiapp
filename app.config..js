@@ -1,7 +1,7 @@
-import 'dotenv/config';
+require('dotenv').config();
 
-
-export default {
+export default ({config}) => ({
+  ...config,
   expo: {
     name: "icsiapp",
     slug: "icsiapp",
@@ -9,6 +9,7 @@ export default {
     orientation: "portrait",
     icon: "./assets/icon.png",
     userInterfaceStyle: "light",
+    scheme:"icsiapp",
     newArchEnabled: true,
     splash: {
       image: "./assets/splash-icon.png",
@@ -72,7 +73,7 @@ export default {
       eas: {
         projectId: process.env.EAS_PROJECT_ID || 'tu-project-id-aqui',
       },
-      firebase: {
+      firebase:{
         apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
         authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
         projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
@@ -80,7 +81,8 @@ export default {
         messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
         appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
         measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID,
-      },
+      }
+      
     },
   }
-}
+})

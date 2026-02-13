@@ -1,63 +1,53 @@
 import { initializeApp, getApps, FirebaseApp } from 'firebase/app';
-import { getAuth, initializeAuth, getReactNativePersistence } from 'firebase/auth';
-import { getFirestore, enableIndexedDbPersistence, initializeFirestore, CACHE_SIZE_UNLIMITED } from 'firebase/firestore';
-import { getStorage } from 'firebase/storage';
-import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Constants from 'expo-constants';
+import { initializeAuth, getReactNativePersistence, Auth, getAuth  } from 'firebase/auth';
+import { getFirestore, initializeFirestore, CACHE_SIZE_UNLIMITED, Firestore } from 'firebase/firestore';
+import { getStorage, FirebaseStorage  } from 'firebase/storage';
+import { getFunctions, Functions } from 'firebase/functions';
+import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage'
+
 
 const firebaseConfig = {
-  apiKey: Constants.expoConfig?.extra?.firebase?.apiKey,
-  authDomain: Constants.expoConfig?.extra?.firebase?.authDomain,
-  projectId: Constants.expoConfig?.extra?.firebase?.projectId,
-  storageBucket: Constants.expoConfig?.extra?.firebase?.storageBucket,
-  messagingSenderId: Constants.expoConfig?.extra?.firebase?.messagingSenderId,
-  appId: Constants.expoConfig?.extra?.firebase?.appId,
-  measurementId: Constants.expoConfig?.extra?.firebase?.measurementId,
+  apiKey:  process.env.EXPO_PUBLIC_FIREBASE_API_KEY as string,
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN as string,
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID as string,
+  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET as string,
+  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID as string,
+  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID as string,
+  measurementId: process.env.EXPO_PUBLIC_FIREBASE_MEASUREMENT_ID as string
 };
 
-// Initialize Firebase
+console.log("API KEY DIRECTA:", process.env.EXPO_PUBLIC_FIREBASE_API_KEY);
+console.log("✅ API KEY DIRECTA:", process.env.EXPO_PUBLIC_FIREBASE_API_KEY);
+console.log("✅ Configuración completa:", {
+  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY ? 'Definida' : 'No definida',
+  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN ? 'Definida' : 'No definida',
+  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID ? 'Definida' : 'No definida',
+});
+
 let app: FirebaseApp;
-let auth;
-let db;
-let storage;
-let functions;
+let auth: Auth;
+let db: Firestore;
+let storage: FirebaseStorage ;
+let functions: Functions;
+
+
 
 if (!getApps().length) {
   app = initializeApp(firebaseConfig);
-  
-  // Auth con persistencia usando AsyncStorage
+
+  // ✅ Auth (Firebase 12 detecta RN automáticamente)
   auth = initializeAuth(app, {
-    persistence: getReactNativePersistence(AsyncStorage)
+    persistence: getReactNativePersistence(ReactNativeAsyncStorage)
   });
-  
-  // Firestore con caché ilimitado para offline
+
+  // ✅ Firestore
   db = initializeFirestore(app, {
-    cacheSizeBytes: CACHE_SIZE_UNLIMITED
+    cacheSizeBytes: CACHE_SIZE_UNLIMITED,
   });
-  
-  // Storage
+
   storage = getStorage(app);
-  
-  // Functions
   functions = getFunctions(app, 'us-central1');
-  
-  // Habilitar persistencia offline para Firestore
-  enableIndexedDbPersistence(db).catch((err) => {
-    if (err.code === 'failed-precondition') {
-      console.log('Persistence failed: Multiple tabs open');
-    } else if (err.code === 'unimplemented') {
-      console.log('Persistence not supported');
-    }
-  });
-  
-  // Conectar a emuladores en desarrollo
-  if (__DEV__) {
-    // connectAuthEmulator(auth, 'http://localhost:9099');
-    // connectFirestoreEmulator(db, 'localhost', 8080);
-    // connectStorageEmulator(storage, 'localhost', 9199);
-    // connectFunctionsEmulator(functions, 'localhost', 5001);
-  }
+
 } else {
   app = getApps()[0];
   auth = getAuth(app);
