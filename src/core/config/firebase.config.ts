@@ -56,4 +56,4 @@ if (!getApps().length) {
   functions = getFunctions(app, 'us-central1');
 }
 
-export { app, auth, db, storage, functions };
+export { app, auth, db, storage, functions, firebaseConfig };
