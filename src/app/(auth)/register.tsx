@@ -1,2 +1,2 @@
-import { RegisterScreen } from '@/modules/auth/screens/Register.screen';
-export default RegisterScreen;
+import { CreateUserScreen } from '@/modules/users/screens/CreateUser.screen';
+export default CreateUserScreen;

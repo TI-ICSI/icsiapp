@@ -80,6 +80,18 @@ export default function DashboardScreen() {
           </Card.Content>
         </Card>
 
+        {user?.role === 'admin' || user?.role === 'coordinator' ? (
+          <Card style={styles.menuCard} onPress={() => router.push('/(auth)/register')}>
+            <Card.Content style={styles.menuCardContent}>
+              <Avatar.Icon size={48} icon="account-plus" />
+              <View style={styles.menuText}>
+                <Text variant="titleMedium">Crear Usuario</Text>
+                <Text variant="bodySmall">Dar de alta a un usuario nuevo</Text>
+              </View>
+            </Card.Content>
+          </Card>
+        ) : null}
+
         <Card style={styles.menuCard} onPress={() => router.push('/(app)/profile')}>
           <Card.Content style={styles.menuCardContent}>
             <Avatar.Icon size={48} icon="account-cog" />
